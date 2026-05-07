@@ -16,6 +16,13 @@ import {
   Type,
 } from "lucide-react";
 
+import { BackendStatus } from "@/app/components/BackendStatus";
+import { BackendToast } from "@/app/components/BackendToast";
+import { WakingModal } from "@/app/components/WakingModal";
+import {
+  useBackendStatus,
+  type BackendStatusState,
+} from "@/app/lib/useBackendStatus";
 import { BipolarBar, UnipolarBar } from "@/app/components/AnimatedBars";
 import { ExampleButtons } from "@/app/components/ExampleButtons";
 import { HowThisWorks } from "@/app/components/HowThisWorks";
@@ -69,6 +76,7 @@ function flattenDetail(detail: unknown, fallback: string): string {
 }
 
 export default function Home() {
+  const { status: backendStatus, retry: retryBackend } = useBackendStatus(API_URL);
   const [mode, setMode] = useState<Mode>("url");
   const [urlValue, setUrlValue] = useState("");
   const [textValue, setTextValue] = useState("");
@@ -142,8 +150,10 @@ export default function Home() {
 
   return (
     <main className="min-h-screen px-4 py-10 sm:py-14">
+      <WakingModal status={backendStatus} />
+      <BackendToast status={backendStatus} />
       <div className="mx-auto max-w-3xl space-y-6">
-        <Hero />
+        <Hero backendStatus={backendStatus} retryBackend={retryBackend} />
 
         <motion.section
           initial={{ opacity: 0, y: 8 }}
@@ -284,7 +294,13 @@ export default function Home() {
   );
 }
 
-function Hero() {
+function Hero({
+  backendStatus,
+  retryBackend,
+}: {
+  backendStatus: BackendStatusState;
+  retryBackend: () => void;
+}) {
   return (
     <header className="flex items-start justify-between gap-4 pt-4">
       <motion.div
@@ -308,12 +324,15 @@ function Hero() {
           factual reliability, and fake-news likelihood.
         </p>
       </motion.div>
-      <Link
-        href="/learn"
-        className="shrink-0 inline-flex items-center gap-1.5 text-sm rounded-full border border-zinc-200 dark:border-zinc-800 bg-white/70 dark:bg-zinc-900/70 px-3 py-1.5 text-zinc-700 dark:text-zinc-200 hover:bg-white dark:hover:bg-zinc-900 hover:border-zinc-400 dark:hover:border-zinc-600 transition"
-      >
-        <Compass size={14} aria-hidden /> Learn
-      </Link>
+      <div className="flex items-center gap-2 shrink-0">
+        <BackendStatus status={backendStatus} onRetry={retryBackend} />
+        <Link
+          href="/learn"
+          className="inline-flex items-center gap-1.5 text-sm rounded-full border border-zinc-200 dark:border-zinc-800 bg-white/70 dark:bg-zinc-900/70 px-3 py-1.5 text-zinc-700 dark:text-zinc-200 hover:bg-white dark:hover:bg-zinc-900 hover:border-zinc-400 dark:hover:border-zinc-600 transition"
+        >
+          <Compass size={14} aria-hidden /> Learn
+        </Link>
+      </div>
     </header>
   );
 }
