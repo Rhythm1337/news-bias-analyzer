@@ -151,7 +151,7 @@ export default function Home() {
   return (
     <main className="min-h-screen px-4 py-10 sm:py-14">
       <WakingModal status={backendStatus} />
-      <BackendToast status={backendStatus} />
+      <BackendToast key={backendStatus} status={backendStatus} />
       <div className="mx-auto max-w-3xl space-y-6">
         <Hero backendStatus={backendStatus} retryBackend={retryBackend} />
 
@@ -252,7 +252,7 @@ export default function Home() {
           />
         </motion.section>
 
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="popLayout" initial={false}>
           {loading ? (
             <motion.div
               key="skeleton"

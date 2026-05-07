@@ -26,6 +26,12 @@ body {
   font-family:
     var(--font-geist-sans), system-ui, -apple-system, "Segoe UI", Arial,
     sans-serif;
+  /* The aurora pseudo-element animates with translate + scale and spills
+     outside the body. Clip horizontally so it doesn't trigger a flickering
+     horizontal scrollbar. Reserve vertical scrollbar gutter so layout
+     doesn't shift when content height changes during loading. */
+  overflow-x: clip;
+  scrollbar-gutter: stable;
 }
 
 code,

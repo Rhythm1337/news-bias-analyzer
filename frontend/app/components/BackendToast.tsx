@@ -69,33 +69,15 @@ function configFor(status: BackendStatusState): ToastConfig | null {
 }
 
 export function BackendToast({ status }: { status: BackendStatusState }) {
+  // Parent re-keys this component on status, so a fresh mount happens for
+  // each new status. dismissed only needs to track this single-status life.
   const [dismissed, setDismissed] = useState(false);
-  // Track the last status we showed a "ready" toast for, so we don't keep
-  // re-showing it after the user dismisses it.
-  const [readyShownFor, setReadyShownFor] = useState<number | null>(null);
-  // A nonce that bumps when the wake cycle changes; resets dismissal state.
-  const [cycleId, setCycleId] = useState(0);
 
-  // When status transitions away from "ready" (e.g. user retries and it
-  // goes back to checking/waking), reset so the next "ready" can show again.
   useEffect(() => {
-    if (status !== "ready") {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setReadyShownFor(null);
-      setDismissed(false);
-      setCycleId((n) => n + 1);
-    } else if (readyShownFor !== cycleId) {
-      setReadyShownFor(cycleId);
-      setDismissed(false);
-    }
-  }, [status, cycleId, readyShownFor]);
-
-  // Auto-dismiss on "ready" after a short delay.
-  useEffect(() => {
-    if (status !== "ready") return;
-    const timer = setTimeout(() => setDismissed(true), READY_AUTO_DISMISS_MS);
-    return () => clearTimeout(timer);
-  }, [status, readyShownFor]);
+    if (status !== "ready" || dismissed) return;
+    const t = setTimeout(() => setDismissed(true), READY_AUTO_DISMISS_MS);
+    return () => clearTimeout(t);
+  }, [status, dismissed]);
 
   const config = configFor(status);
   const open = config !== null && !dismissed;
@@ -118,7 +100,6 @@ export function BackendToast({ status }: { status: BackendStatusState }) {
       <AnimatePresence>
         {open && config && (
           <motion.div
-            key={`${status}-${cycleId}`}
             initial={{ opacity: 0, y: -16, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -8, scale: 0.97 }}

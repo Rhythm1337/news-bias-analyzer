@@ -1,6 +1,7 @@
 import logging
 
 from google import genai
+from google.genai import errors as genai_errors
 from google.genai import types
 
 from app.ai.base import AIProvider, AnalysisResult
@@ -24,17 +25,35 @@ class GeminiProvider(AIProvider):
 
     def analyze(self, article_text: str) -> AnalysisResult:
         system_instruction, user_prompt = build_prompt(article_text)
-        response = self._client.models.generate_content(
-            model=MODEL_NAME,
-            contents=user_prompt,
-            config=types.GenerateContentConfig(
-                system_instruction=system_instruction,
-                response_mime_type="application/json",
-                response_schema=AnalysisResult,
-                temperature=0.2,
-                max_output_tokens=1500,
-            ),
-        )
+        try:
+            response = self._client.models.generate_content(
+                model=MODEL_NAME,
+                contents=user_prompt,
+                config=types.GenerateContentConfig(
+                    system_instruction=system_instruction,
+                    response_mime_type="application/json",
+                    response_schema=AnalysisResult,
+                    temperature=0.2,
+                    max_output_tokens=1500,
+                ),
+            )
+        except genai_errors.ClientError as exc:
+            code = getattr(exc, "code", None)
+            if code == 429:
+                raise RuntimeError(
+                    "Gemini rate limit hit. Wait about a minute and try again "
+                    "(free tier is 10 req/min, 250 req/day)."
+                ) from exc
+            if code == 400 and "location is not supported" in str(exc).lower():
+                raise RuntimeError(
+                    "Gemini does not support this server region. Redeploy the "
+                    "backend in a supported region (US works reliably)."
+                ) from exc
+            log.warning("Gemini ClientError: %s", exc)
+            raise RuntimeError(f"Gemini rejected the request ({code}).") from exc
+        except genai_errors.ServerError as exc:
+            log.warning("Gemini ServerError: %s", exc)
+            raise RuntimeError("Gemini service is having issues. Try again.") from exc
 
         candidates = getattr(response, "candidates", None) or []
         if candidates:
