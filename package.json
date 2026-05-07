@@ -1,0 +1,20 @@
+{
+  "name": "news-bias-analyzer",
+  "private": true,
+  "workspaces": [
+    "frontend"
+  ],
+  "scripts": {
+    "setup": "npm install && npm run setup:backend",
+    "setup:backend": "cd backend && python -m venv .venv && .venv\\Scripts\\python.exe -m pip install -r requirements.txt",
+    "dev": "node scripts/dev.mjs",
+    "dev:backend": "backend\\.venv\\Scripts\\python.exe -m uvicorn app.main:app --app-dir backend --reload --reload-dir backend\\app --port 8000",
+    "dev:frontend": "npm --workspace frontend run dev",
+    "lint": "npm --workspace frontend run lint",
+    "typecheck": "npm --workspace frontend exec -- tsc --noEmit",
+    "build": "npm --workspace frontend run build"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}

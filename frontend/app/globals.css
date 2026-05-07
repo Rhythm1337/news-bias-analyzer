@@ -1,0 +1,85 @@
+@import "tailwindcss";
+
+:root {
+  --background: #fafafa;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+html,
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family:
+    var(--font-geist-sans), system-ui, -apple-system, "Segoe UI", Arial,
+    sans-serif;
+}
+
+code,
+kbd,
+pre {
+  font-family:
+    var(--font-geist-mono), ui-monospace, "Cascadia Code", "Source Code Pro",
+    Menlo, Consolas, monospace;
+}
+
+.bg-aurora {
+  position: relative;
+  isolation: isolate;
+}
+.bg-aurora::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(at 15% 10%, rgba(59, 130, 246, 0.18) 0px, transparent 50%),
+    radial-gradient(at 85% 5%, rgba(168, 85, 247, 0.14) 0px, transparent 50%),
+    radial-gradient(at 50% 90%, rgba(16, 185, 129, 0.12) 0px, transparent 55%);
+  filter: blur(40px);
+  animation: aurora-drift 22s ease-in-out infinite;
+}
+@media (prefers-color-scheme: dark) {
+  .bg-aurora::before {
+    background:
+      radial-gradient(at 15% 10%, rgba(59, 130, 246, 0.22) 0px, transparent 50%),
+      radial-gradient(at 85% 5%, rgba(168, 85, 247, 0.18) 0px, transparent 50%),
+      radial-gradient(at 50% 90%, rgba(16, 185, 129, 0.14) 0px, transparent 55%);
+  }
+}
+@keyframes aurora-drift {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  33% { transform: translate3d(-3%, 2%, 0) scale(1.05); }
+  66% { transform: translate3d(3%, -2%, 0) scale(1.02); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bg-aurora::before { animation: none; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+.card-glass {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+@media (prefers-color-scheme: dark) {
+  .card-glass {
+    background: rgba(24, 24, 27, 0.75);
+  }
+}
