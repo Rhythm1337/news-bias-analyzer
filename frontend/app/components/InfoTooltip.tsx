@@ -27,12 +27,25 @@ export function InfoTooltip({
   }, [open]);
 
   return (
-    <div ref={ref} className="relative inline-block">
+    <div ref={ref} style={{ position: "relative", display: "inline-block" }}>
       <button
         type="button"
         aria-label={`What is ${title}?`}
         onClick={() => setOpen((v) => !v)}
-        className="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 transition"
+        style={{
+          marginLeft: 4,
+          display: "inline-flex",
+          height: 16,
+          width: 16,
+          alignItems: "center",
+          justifyContent: "center",
+          borderRadius: 999,
+          color: "var(--ink-4)",
+          background: "transparent",
+          border: 0,
+          padding: 0,
+          transition: "color 0.15s",
+        }}
       >
         <Info size={14} aria-hidden />
       </button>
@@ -44,12 +57,27 @@ export function InfoTooltip({
             exit={{ opacity: 0, y: -4, scale: 0.97 }}
             transition={{ duration: 0.15 }}
             role="tooltip"
-            className="absolute z-20 left-0 top-6 w-72 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 p-3 shadow-xl text-xs text-zinc-700 dark:text-zinc-300 leading-relaxed"
+            className="card"
+            style={{
+              position: "absolute",
+              zIndex: 20,
+              left: 0,
+              top: 24,
+              width: 288,
+              padding: 14,
+              boxShadow: "var(--shadow-2)",
+              fontSize: 12.5,
+              color: "var(--ink-2)",
+              lineHeight: 1.5,
+            }}
           >
-            <p className="font-semibold text-zinc-900 dark:text-zinc-100 mb-1">
+            <p
+              className="eyebrow"
+              style={{ margin: 0, marginBottom: 6 }}
+            >
               {title}
             </p>
-            <p>{body}</p>
+            <p style={{ margin: 0 }}>{body}</p>
           </motion.div>
         )}
       </AnimatePresence>
