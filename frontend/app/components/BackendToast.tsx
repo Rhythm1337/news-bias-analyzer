@@ -30,6 +30,7 @@ function configFor(status: BackendStatusState): ToastConfig | null {
           <motion.span
             animate={{ rotate: 360 }}
             transition={{ duration: 1.4, repeat: Infinity, ease: "linear" }}
+            style={{ display: "inline-flex" }}
           >
             <Loader2 size={14} aria-hidden />
           </motion.span>
@@ -44,6 +45,7 @@ function configFor(status: BackendStatusState): ToastConfig | null {
           <motion.span
             animate={{ rotate: 360 }}
             transition={{ duration: 1.4, repeat: Infinity, ease: "linear" }}
+            style={{ display: "inline-flex" }}
           >
             <Loader2 size={14} aria-hidden />
           </motion.span>
@@ -82,45 +84,99 @@ export function BackendToast({ status }: { status: BackendStatusState }) {
   const config = configFor(status);
   const open = config !== null && !dismissed;
 
-  const toneClasses = config
+  const toneStyle: React.CSSProperties | null = config
     ? {
-        info: "border-amber-200 dark:border-amber-900 bg-amber-50/95 dark:bg-amber-950/80 text-amber-900 dark:text-amber-100",
-        success:
-          "border-emerald-200 dark:border-emerald-900 bg-emerald-50/95 dark:bg-emerald-950/80 text-emerald-900 dark:text-emerald-100",
-        error:
-          "border-red-200 dark:border-red-900 bg-red-50/95 dark:bg-red-950/80 text-red-900 dark:text-red-100",
+        info: {
+          borderColor: "var(--c-tone)",
+          background: "var(--c-tone-soft)",
+          color: "var(--c-tone)",
+        },
+        success: {
+          borderColor: "var(--c-fact)",
+          background: "var(--c-fact-soft)",
+          color: "var(--c-fact)",
+        },
+        error: {
+          borderColor: "var(--c-fake)",
+          background: "var(--c-fake-soft)",
+          color: "var(--c-fake)",
+        },
       }[config.tone]
-    : "";
+    : null;
 
   return (
     <div
+      role="status"
       aria-live="polite"
-      className="fixed top-4 left-1/2 -translate-x-1/2 z-40 w-full max-w-sm px-4 pointer-events-none"
+      style={{
+        position: "fixed",
+        top: 76,
+        left: "50%",
+        transform: "translateX(-50%)",
+        zIndex: 60,
+        width: "100%",
+        maxWidth: 420,
+        padding: "0 16px",
+        pointerEvents: "none",
+      }}
     >
       <AnimatePresence>
-        {open && config && (
+        {open && config && toneStyle && (
           <motion.div
             initial={{ opacity: 0, y: -16, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -8, scale: 0.97 }}
             transition={{ duration: 0.22 }}
-            className={`relative pointer-events-auto rounded-xl border shadow-lg backdrop-blur-sm p-3.5 pr-9 ${toneClasses}`}
+            style={{
+              position: "relative",
+              pointerEvents: "auto",
+              border: "1px solid",
+              borderRadius: "var(--radius)",
+              boxShadow: "var(--shadow-2)",
+              padding: "14px 36px 14px 14px",
+              ...toneStyle,
+            }}
           >
             <button
               type="button"
               aria-label="Dismiss"
               onClick={() => setDismissed(true)}
-              className="absolute top-2 right-2 opacity-60 hover:opacity-100 transition"
+              style={{
+                position: "absolute",
+                top: 8,
+                right: 8,
+                background: "transparent",
+                border: 0,
+                color: "currentColor",
+                opacity: 0.6,
+                padding: 2,
+                display: "inline-flex",
+              }}
             >
               <X size={14} aria-hidden />
             </button>
-            <div className="flex items-start gap-2.5">
-              <span className="mt-0.5 shrink-0">{config.icon}</span>
-              <div className="min-w-0">
-                <p className="text-sm font-semibold leading-tight">
+            <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
+              <span style={{ marginTop: 2, flexShrink: 0 }}>{config.icon}</span>
+              <div style={{ minWidth: 0 }}>
+                <p
+                  className="eyebrow"
+                  style={{
+                    margin: 0,
+                    color: "currentColor",
+                    fontSize: 10.5,
+                    letterSpacing: ".14em",
+                  }}
+                >
                   {config.title}
                 </p>
-                <p className="mt-0.5 text-xs leading-snug opacity-85">
+                <p
+                  style={{
+                    margin: "4px 0 0",
+                    fontSize: 13,
+                    lineHeight: 1.45,
+                    color: "var(--ink-2)",
+                  }}
+                >
                   {config.body}
                 </p>
               </div>
