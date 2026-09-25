@@ -14,9 +14,24 @@ export function BackendStatus({
 }) {
   if (status === "ready") {
     return (
-      <span className="inline-flex items-center gap-1.5 text-xs text-emerald-600 dark:text-emerald-400 px-2.5 py-1.5">
+      <span
+        className="mono"
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 6,
+          fontSize: 11,
+          letterSpacing: ".06em",
+          textTransform: "uppercase",
+          color: "var(--c-fact)",
+          padding: "4px 10px",
+          border: "1px solid var(--rule)",
+          background: "var(--c-fact-soft)",
+          borderRadius: 999,
+        }}
+      >
         <CheckCircle2 size={12} aria-hidden />
-        <span className="hidden sm:inline">Backend ready</span>
+        <span>Backend ready</span>
       </span>
     );
   }
@@ -24,10 +39,26 @@ export function BackendStatus({
   if (status === "checking" || status === "waking") {
     const label = status === "waking" ? "Waking" : "Checking";
     return (
-      <span className="inline-flex items-center gap-1.5 text-xs text-amber-600 dark:text-amber-400 px-2.5 py-1.5">
+      <span
+        className="mono"
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 6,
+          fontSize: 11,
+          letterSpacing: ".06em",
+          textTransform: "uppercase",
+          color: "var(--c-tone)",
+          padding: "4px 10px",
+          border: "1px solid var(--rule)",
+          background: "var(--c-tone-soft)",
+          borderRadius: 999,
+        }}
+      >
         <motion.span
           animate={{ rotate: 360 }}
           transition={{ duration: 1.6, repeat: Infinity, ease: "linear" }}
+          style={{ display: "inline-flex" }}
         >
           <Loader2 size={12} aria-hidden />
         </motion.span>
@@ -40,11 +71,26 @@ export function BackendStatus({
     <button
       type="button"
       onClick={onRetry}
-      className="inline-flex items-center gap-1.5 text-xs text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 px-2.5 py-1.5 rounded-full border border-red-200 dark:border-red-900 bg-red-50/60 dark:bg-red-950/40 transition"
+      className="mono"
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 6,
+        fontSize: 11,
+        letterSpacing: ".06em",
+        textTransform: "uppercase",
+        color: "var(--c-fake)",
+        padding: "4px 10px",
+        border: "1px solid var(--c-fake)",
+        background: "var(--c-fake-soft)",
+        borderRadius: 999,
+        cursor: "pointer",
+        transition: "background 0.15s, border-color 0.15s",
+      }}
     >
       <XCircle size={12} aria-hidden />
       Backend down
-      <RefreshCw size={11} aria-hidden className="ml-1" />
+      <RefreshCw size={11} aria-hidden style={{ marginLeft: 2 }} />
     </button>
   );
 }

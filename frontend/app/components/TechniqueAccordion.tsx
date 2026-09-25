@@ -15,25 +15,101 @@ export type TechniqueItem = {
 export function TechniqueAccordion({ items }: { items: TechniqueItem[] }) {
   const [openIdx, setOpenIdx] = useState<number | null>(0);
   return (
-    <ul className="rounded-2xl border border-zinc-200 dark:border-zinc-800 card-glass overflow-hidden divide-y divide-zinc-200 dark:divide-zinc-800">
+    <ul
+      className="card"
+      style={{
+        margin: 0,
+        padding: 0,
+        listStyle: "none",
+        overflow: "hidden",
+      }}
+    >
       {items.map((it, i) => {
         const open = openIdx === i;
+        const isLast = i === items.length - 1;
         return (
-          <li key={it.name}>
+          <li
+            key={it.name}
+            style={{
+              borderBottom: isLast ? "none" : "1px solid var(--rule)",
+            }}
+          >
             <button
               type="button"
               onClick={() => setOpenIdx(open ? null : i)}
-              className="w-full flex items-center justify-between gap-3 px-4 sm:px-5 py-3 text-left hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition"
+              aria-expanded={open}
+              style={{
+                width: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 12,
+                padding: "14px 18px",
+                textAlign: "left",
+                border: 0,
+                background: open ? "var(--bg-2)" : "transparent",
+                color: "var(--ink)",
+                transition: "background 0.15s",
+                fontFamily: "var(--body)",
+              }}
+              onMouseEnter={(e) => {
+                if (!open) e.currentTarget.style.background = "var(--bg-2)";
+              }}
+              onMouseLeave={(e) => {
+                if (!open) e.currentTarget.style.background = "transparent";
+              }}
             >
-              <span className="flex items-center gap-3 min-w-0">
-                <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-linear-to-br from-orange-500 to-red-500 text-white text-xs font-bold">
+              <span
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 14,
+                  minWidth: 0,
+                }}
+              >
+                <span
+                  className="mono tnum"
+                  style={{
+                    flexShrink: 0,
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: 28,
+                    height: 28,
+                    border: "1px solid var(--rule-2)",
+                    background: "var(--paper)",
+                    color: "var(--ink-2)",
+                    fontSize: 11,
+                    fontWeight: 500,
+                    borderRadius: 2,
+                    letterSpacing: ".04em",
+                  }}
+                >
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <span className="min-w-0">
-                  <span className="block font-medium text-zinc-900 dark:text-zinc-100 truncate">
+                <span style={{ minWidth: 0 }}>
+                  <span
+                    className="serif"
+                    style={{
+                      display: "block",
+                      fontSize: 17,
+                      fontWeight: 500,
+                      color: "var(--ink)",
+                      letterSpacing: "-0.005em",
+                      lineHeight: 1.3,
+                    }}
+                  >
                     {it.name}
                   </span>
-                  <span className="block text-xs text-zinc-500 dark:text-zinc-400 truncate">
+                  <span
+                    style={{
+                      display: "block",
+                      fontSize: 13,
+                      color: "var(--ink-3)",
+                      marginTop: 2,
+                      lineHeight: 1.4,
+                    }}
+                  >
                     {it.summary}
                   </span>
                 </span>
@@ -41,7 +117,11 @@ export function TechniqueAccordion({ items }: { items: TechniqueItem[] }) {
               <motion.span
                 animate={{ rotate: open ? 180 : 0 }}
                 transition={{ duration: 0.2 }}
-                className="text-zinc-400 shrink-0"
+                style={{
+                  color: "var(--ink-4)",
+                  flexShrink: 0,
+                  display: "inline-flex",
+                }}
               >
                 <ChevronDown size={18} aria-hidden />
               </motion.span>
@@ -53,17 +133,27 @@ export function TechniqueAccordion({ items }: { items: TechniqueItem[] }) {
                   animate={{ height: "auto", opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
                   transition={{ duration: 0.22 }}
-                  className="overflow-hidden"
+                  style={{ overflow: "hidden" }}
                 >
-                  <div className="px-4 sm:px-5 pb-4 pt-1 space-y-3">
+                  <div
+                    style={{
+                      padding: "4px 18px 18px",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 10,
+                    }}
+                  >
                     <Quote
-                      icon={<Zap size={14} className="text-amber-500" />}
+                      icon={<Zap size={12} aria-hidden />}
+                      iconColor="var(--c-tone)"
                       label="Looks like"
                       body={it.example}
+                      italic
                     />
                     <Quote
-                      icon={<ShieldCheck size={14} className="text-emerald-500" />}
-                      label="Counter"
+                      icon={<ShieldCheck size={12} aria-hidden />}
+                      iconColor="var(--c-fact)"
+                      label="What to do"
                       body={it.counter}
                     />
                   </div>
@@ -79,19 +169,52 @@ export function TechniqueAccordion({ items }: { items: TechniqueItem[] }) {
 
 function Quote({
   icon,
+  iconColor,
   label,
   body,
+  italic,
 }: {
   icon: React.ReactNode;
+  iconColor: string;
   label: string;
   body: string;
+  italic?: boolean;
 }) {
   return (
-    <div className="rounded-lg bg-zinc-50 dark:bg-zinc-900/60 px-3 py-2.5">
-      <p className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-        {icon} {label}
+    <div
+      style={{
+        background: "var(--bg-2)",
+        border: "1px solid var(--rule)",
+        borderRadius: 2,
+        padding: "10px 14px",
+      }}
+    >
+      <p
+        className="mono"
+        style={{
+          margin: 0,
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 6,
+          fontSize: 10,
+          letterSpacing: ".12em",
+          textTransform: "uppercase",
+          color: "var(--ink-3)",
+        }}
+      >
+        <span style={{ color: iconColor, display: "inline-flex" }}>{icon}</span>
+        {label}
       </p>
-      <p className="mt-1 text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed">
+      <p
+        style={{
+          marginTop: 6,
+          marginBottom: 0,
+          fontSize: 14,
+          lineHeight: 1.55,
+          color: "var(--ink-2)",
+          fontStyle: italic ? "italic" : "normal",
+        }}
+      >
         {body}
       </p>
     </div>

@@ -13,29 +13,68 @@ import { useState } from "react";
 export function HowThisWorks() {
   const [open, setOpen] = useState(false);
   return (
-    <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 card-glass overflow-hidden">
+    <div className="card" style={{ overflow: "hidden" }}>
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="w-full flex items-center justify-between gap-3 p-4 text-left"
+        style={{
+          width: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 12,
+          padding: 18,
+          textAlign: "left",
+          background: "transparent",
+          border: 0,
+          color: "var(--ink)",
+        }}
       >
-        <span className="flex items-center gap-3">
-          <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300">
+        <span style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <span
+            style={{
+              display: "inline-flex",
+              height: 32,
+              width: 32,
+              alignItems: "center",
+              justifyContent: "center",
+              border: "1px solid var(--rule)",
+              background: "var(--c-fact-soft)",
+              color: "var(--c-fact)",
+              borderRadius: "var(--radius)",
+            }}
+          >
             <Cpu size={16} aria-hidden />
           </span>
           <span>
-            <span className="block font-medium text-zinc-900 dark:text-zinc-100">
+            <span
+              className="serif"
+              style={{
+                display: "block",
+                fontSize: 17,
+                fontWeight: 500,
+                color: "var(--ink)",
+                letterSpacing: "-0.01em",
+              }}
+            >
               How this works (and why you should still think for yourself)
             </span>
-            <span className="block text-xs text-zinc-500 dark:text-zinc-400">
-              The pipeline + the security defenses + the limitations
+            <span
+              style={{
+                display: "block",
+                fontSize: 12.5,
+                color: "var(--ink-3)",
+                marginTop: 2,
+              }}
+            >
+              The steps, the safety checks, and the limits
             </span>
           </span>
         </span>
         <motion.span
           animate={{ rotate: open ? 180 : 0 }}
           transition={{ duration: 0.2 }}
-          className="text-zinc-400"
+          style={{ color: "var(--ink-4)", display: "inline-flex" }}
         >
           <ChevronDown size={18} aria-hidden />
         </motion.span>
@@ -48,57 +87,91 @@ export function HowThisWorks() {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="overflow-hidden"
+            style={{ overflow: "hidden" }}
           >
-            <div className="px-5 pb-5 pt-1 space-y-5 text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed">
+            <div
+              style={{
+                padding: "4px 22px 22px",
+                borderTop: "1px solid var(--rule)",
+                fontSize: 14,
+                color: "var(--ink-2)",
+                lineHeight: 1.6,
+                display: "flex",
+                flexDirection: "column",
+                gap: 18,
+                marginTop: 4,
+              }}
+            >
               <Block
                 icon={<Wrench size={16} />}
-                tone="zinc"
-                title="The pipeline"
+                tone="ink"
+                title="The steps"
                 body={
-                  <ol className="list-decimal pl-5 space-y-1">
+                  <ol style={{ paddingLeft: 20, margin: 0, display: "flex", flexDirection: "column", gap: 4 }}>
                     <li>
-                      You paste a URL or text. URLs are fetched server-side and
-                      the article body is extracted with{" "}
-                      <code className="text-xs bg-zinc-100 dark:bg-zinc-800 px-1 rounded">
+                      You paste a URL or text. The server fetches the URL and
+                      pulls out the article body with{" "}
+                      <code
+                        className="mono"
+                        style={{
+                          fontSize: 12,
+                          background: "var(--bg-2)",
+                          border: "1px solid var(--rule)",
+                          padding: "0 4px",
+                          borderRadius: 2,
+                        }}
+                      >
                         trafilatura
                       </code>
                       .
                     </li>
                     <li>
-                      Article text is wrapped in untrusted-data delimiters and
-                      sent to{" "}
-                      <code className="text-xs">gemini-2.5-flash</code> with a
-                      strict JSON schema.
+                      The article text is wrapped in safety markers and sent
+                      to{" "}
+                      <code
+                        className="mono"
+                        style={{
+                          fontSize: 12,
+                          background: "var(--bg-2)",
+                          border: "1px solid var(--rule)",
+                          padding: "0 4px",
+                          borderRadius: 2,
+                        }}
+                      >
+                        gemini-2.5-flash
+                      </code>{" "}
+                      with a strict JSON format.
                     </li>
-                    <li>The model&rsquo;s response is validated and shown.</li>
+                    <li>The model&rsquo;s reply is checked, then shown to you.</li>
                   </ol>
                 }
               />
 
               <Block
                 icon={<Lock size={16} />}
-                tone="emerald"
-                title="Security defenses"
+                tone="fact"
+                title="Safety checks"
                 body={
-                  <ul className="list-disc pl-5 space-y-1">
+                  <ul style={{ paddingLeft: 20, margin: 0, display: "flex", flexDirection: "column", gap: 4 }}>
                     <li>
-                      <strong>Prompt-injection defense.</strong> Article wrapped
-                      in untrusted-data markers, delimiter tokens stripped,
-                      length capped, system prompt frames it as data.
+                      <strong>Prompt-injection defense.</strong> The article is
+                      wrapped in safety markers. Special tokens are removed.
+                      Length is capped. The system prompt tells the model to
+                      treat the article as data, not as instructions.
                     </li>
                     <li>
-                      <strong>SSRF protection.</strong> http(s) only; private,
-                      loopback, link-local and cloud-metadata IPs rejected; each
-                      redirect hop revalidated.
+                      <strong>SSRF protection.</strong> Only http(s) URLs are
+                      allowed. Private, loopback, link-local, and
+                      cloud-metadata IPs are blocked. Each redirect is checked
+                      again.
                     </li>
                     <li>
-                      <strong>Rate limiting.</strong> 20 / minute / IP.
-                      Protects both availability and AI quota.
+                      <strong>Rate limit.</strong> 20 requests per minute per
+                      IP. This keeps the site up and saves AI quota.
                     </li>
                     <li>
-                      <strong>Pluggable provider.</strong> Gemini today; the
-                      interface is provider-agnostic.
+                      <strong>Swappable AI.</strong> Gemini is used now. The
+                      code is built so any provider can be plugged in later.
                     </li>
                   </ul>
                 }
@@ -106,23 +179,23 @@ export function HowThisWorks() {
 
               <Block
                 icon={<ShieldAlert size={16} />}
-                tone="amber"
-                title="Limitations (read this)"
+                tone="tone"
+                title="Limits (please read)"
                 body={
-                  <ul className="list-disc pl-5 space-y-1">
-                    <li>The AI is not infallible. It will sometimes miscategorize.</li>
+                  <ul style={{ paddingLeft: 20, margin: 0, display: "flex", flexDirection: "column", gap: 4 }}>
+                    <li>The AI is not perfect. It will sometimes get things wrong.</li>
                     <li>
-                      Scores are <em>estimates</em>, not measurements. 0.42 vs
-                      0.45 isn&rsquo;t meaningful.
+                      Scores are <em>guesses</em>, not exact numbers. 0.42 and
+                      0.45 mean about the same thing.
                     </li>
                     <li>
-                      The model has its own biases. Treating its output as
-                      gospel is the kind of uncritical media consumption this
-                      tool is meant to combat.
+                      The model has its own biases too. Trusting it
+                      blindly is the same lazy reading habit this tool is
+                      meant to fight.
                     </li>
                     <li>
-                      Paywalled or JS-rendered articles may not extract.
-                      Paste the text instead.
+                      Paywalled articles, or articles built with JavaScript,
+                      may not load. Paste the text instead.
                     </li>
                   </ul>
                 }
@@ -142,29 +215,47 @@ function Block({
   body,
 }: {
   icon: React.ReactNode;
-  tone: "zinc" | "emerald" | "amber";
+  tone: "ink" | "fact" | "tone";
   title: string;
   body: React.ReactNode;
 }) {
-  const toneClass = {
-    zinc: "bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200",
-    emerald:
-      "bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300",
-    amber:
-      "bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300",
+  const toneStyle: React.CSSProperties = {
+    ink: {
+      background: "var(--bg-2)",
+      color: "var(--ink-2)",
+    },
+    fact: {
+      background: "var(--c-fact-soft)",
+      color: "var(--c-fact)",
+    },
+    tone: {
+      background: "var(--c-tone-soft)",
+      color: "var(--c-tone)",
+    },
   }[tone];
   return (
-    <div className="flex gap-3">
+    <div style={{ display: "flex", gap: 12 }}>
       <span
-        className={`mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${toneClass}`}
+        style={{
+          marginTop: 2,
+          display: "inline-flex",
+          height: 28,
+          width: 28,
+          flexShrink: 0,
+          alignItems: "center",
+          justifyContent: "center",
+          border: "1px solid var(--rule)",
+          borderRadius: "var(--radius)",
+          ...toneStyle,
+        }}
       >
         {icon}
       </span>
-      <div className="flex-1 min-w-0">
-        <p className="font-semibold text-zinc-900 dark:text-zinc-100 mb-1">
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div className="eyebrow" style={{ marginBottom: 6 }}>
           {title}
-        </p>
-        <div>{body}</div>
+        </div>
+        <div style={{ color: "var(--ink-2)" }}>{body}</div>
       </div>
     </div>
   );

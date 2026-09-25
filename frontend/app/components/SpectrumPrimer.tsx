@@ -7,29 +7,68 @@ import { useState } from "react";
 export function SpectrumPrimer() {
   const [open, setOpen] = useState(false);
   return (
-    <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 card-glass overflow-hidden">
+    <div className="card" style={{ overflow: "hidden" }}>
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="w-full flex items-center justify-between gap-3 p-4 text-left"
+        style={{
+          width: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 12,
+          padding: 18,
+          textAlign: "left",
+          background: "transparent",
+          border: 0,
+          color: "var(--ink)",
+        }}
       >
-        <span className="flex items-center gap-3">
-          <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-950 text-blue-600 dark:text-blue-300">
+        <span style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <span
+            style={{
+              display: "inline-flex",
+              height: 32,
+              width: 32,
+              alignItems: "center",
+              justifyContent: "center",
+              border: "1px solid var(--rule)",
+              background: "var(--c-bias-soft)",
+              color: "var(--c-bias)",
+              borderRadius: "var(--radius)",
+            }}
+          >
             <Compass size={16} aria-hidden />
           </span>
           <span>
-            <span className="block font-medium text-zinc-900 dark:text-zinc-100">
-              New here? What do these scores actually mean?
+            <span
+              className="serif"
+              style={{
+                display: "block",
+                fontSize: 17,
+                fontWeight: 500,
+                color: "var(--ink)",
+                letterSpacing: "-0.01em",
+              }}
+            >
+              New here? What do these scores really mean?
             </span>
-            <span className="block text-xs text-zinc-500 dark:text-zinc-400">
-              30-second crash course on the bias spectrum
+            <span
+              style={{
+                display: "block",
+                fontSize: 12.5,
+                color: "var(--ink-3)",
+                marginTop: 2,
+              }}
+            >
+              A quick guide to the bias scale
             </span>
           </span>
         </span>
         <motion.span
           animate={{ rotate: open ? 180 : 0 }}
           transition={{ duration: 0.2 }}
-          className="text-zinc-400"
+          style={{ color: "var(--ink-4)", display: "inline-flex" }}
         >
           <ChevronDown size={18} aria-hidden />
         </motion.span>
@@ -42,26 +81,39 @@ export function SpectrumPrimer() {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="overflow-hidden"
+            style={{ overflow: "hidden" }}
           >
-            <div className="px-5 pb-5 pt-1 space-y-5 text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed">
+            <div
+              style={{
+                padding: "4px 22px 22px",
+                borderTop: "1px solid var(--rule)",
+                fontSize: 14,
+                color: "var(--ink-2)",
+                lineHeight: 1.6,
+                display: "flex",
+                flexDirection: "column",
+                gap: 18,
+                marginTop: 4,
+              }}
+            >
               <SpectrumDiagram />
 
               <Item
-                title="Left ↔ Right"
+                title="Left to Right"
                 body={
-                  <ul className="list-disc pl-5 space-y-1">
+                  <ul style={{ paddingLeft: 20, margin: 0, display: "flex", flexDirection: "column", gap: 4 }}>
                     <li>
-                      <strong>Left:</strong> favors stronger social safety
-                      nets, regulation, progressive social policy.
+                      <strong>Left:</strong> tends to support more government
+                      help for people, more rules for business, and newer
+                      social ideas.
                     </li>
                     <li>
-                      <strong>Center:</strong> balanced framing, or topics
-                      that don&rsquo;t map cleanly onto left/right.
+                      <strong>Center:</strong> a balanced view, or a topic
+                      that does not fit clearly on the left or right.
                     </li>
                     <li>
-                      <strong>Right:</strong> favors free markets, lower
-                      taxes, traditional social policy.
+                      <strong>Right:</strong> tends to support free markets,
+                      lower taxes, and older social ideas.
                     </li>
                   </ul>
                 }
@@ -70,22 +122,22 @@ export function SpectrumPrimer() {
               <Item
                 title="Bias is not the same as wrong"
                 body={
-                  <p>
-                    A left- or right-leaning article can still be accurate;
-                    a centered article can still mislead.{" "}
-                    <strong>Bias</strong> measures perspective.{" "}
+                  <p style={{ margin: 0 }}>
+                    A left or right leaning article can still be true. A
+                    centered article can still mislead.{" "}
+                    <strong>Bias</strong> shows the point of view.{" "}
                     <strong>Factual</strong> reliability is a separate score.
                   </p>
                 }
               />
 
               <Item
-                title="Center ≠ correct"
+                title="Center is not always right"
                 body={
-                  <p>
-                    Watch for <em>false balance</em>: treating two sides as
-                    equally valid when the evidence isn&rsquo;t. Sounds
-                    neutral, misleads anyway.
+                  <p style={{ margin: 0 }}>
+                    Watch out for <em>false balance</em>. This is when two
+                    sides are shown as equal, even when the evidence is not.
+                    It sounds fair, but it can still mislead.
                   </p>
                 }
               />
@@ -99,14 +151,39 @@ export function SpectrumPrimer() {
 
 function SpectrumDiagram() {
   return (
-    <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white/60 dark:bg-zinc-900/60 p-4">
-      <div className="h-2 rounded-full bg-linear-to-r from-blue-500 via-zinc-300 dark:via-zinc-600 to-red-500" />
-      <div className="mt-2 grid grid-cols-5 text-[10px] uppercase tracking-wider text-zinc-500">
-        <span className="text-left text-blue-600 dark:text-blue-400">Left</span>
-        <span className="text-center">Center-L</span>
-        <span className="text-center">Center</span>
-        <span className="text-center">Center-R</span>
-        <span className="text-right text-red-600 dark:text-red-400">Right</span>
+    <div
+      style={{
+        border: "1px solid var(--rule)",
+        background: "var(--bg-2)",
+        padding: 14,
+        borderRadius: "var(--radius)",
+      }}
+    >
+      <div
+        style={{
+          height: 8,
+          borderRadius: 999,
+          background:
+            "linear-gradient(to right, var(--bias-l), var(--bias-c), var(--bias-r))",
+        }}
+      />
+      <div
+        className="mono"
+        style={{
+          marginTop: 8,
+          display: "grid",
+          gridTemplateColumns: "repeat(5, 1fr)",
+          fontSize: 10,
+          textTransform: "uppercase",
+          letterSpacing: ".08em",
+          color: "var(--ink-4)",
+        }}
+      >
+        <span style={{ textAlign: "left", color: "var(--bias-l)" }}>Left</span>
+        <span style={{ textAlign: "center" }}>Center-L</span>
+        <span style={{ textAlign: "center" }}>Center</span>
+        <span style={{ textAlign: "center" }}>Center-R</span>
+        <span style={{ textAlign: "right", color: "var(--bias-r)" }}>Right</span>
       </div>
     </div>
   );
@@ -121,10 +198,10 @@ function Item({
 }) {
   return (
     <div>
-      <p className="font-semibold text-zinc-900 dark:text-zinc-100 mb-1">
+      <div className="eyebrow" style={{ marginBottom: 6 }}>
         {title}
-      </p>
-      <div>{body}</div>
+      </div>
+      <div style={{ color: "var(--ink-2)" }}>{body}</div>
     </div>
   );
 }

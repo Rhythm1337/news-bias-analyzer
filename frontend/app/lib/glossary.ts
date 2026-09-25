@@ -1,57 +1,57 @@
 export const METRIC_DEFINITIONS = {
   political: {
     title: "Political bias",
-    body: "Where the article sits on the left/right political spectrum. 'Left' generally favors larger social safety nets, progressive social policy, and stronger market regulation. 'Right' generally favors free markets, traditional social policy, and smaller government. 'Center' = balanced or non-partisan framing. Bias does not mean wrong: a left-leaning article can still be factually accurate, and 'center' isn't automatically truthful (false-balance fallacy).",
+    body: "Where the article sits from left to right in politics. 'Left' usually supports more government help for people, newer social ideas, and stronger rules for business. 'Right' usually supports free markets, older social ideas, and smaller government. 'Center' means balanced, or a topic that does not fit clearly on either side. Bias is not the same as wrong. A left-leaning article can still be true. A 'center' article can still mislead, which is called false balance.",
   },
   emotional: {
     title: "Emotional tone",
-    body: "How emotionally charged the language is. 'Calm' = neutral reporting voice. 'Charged' = strong adjectives, urgency. 'Inflammatory' = anger/fear language designed to provoke. High emotional tone correlates with lower factual reliability but isn't the same thing.",
+    body: "How strong the feelings are in the words. 'Calm' means a normal, neutral reporting voice. 'Charged' means strong adjectives and a sense of urgency. 'Inflammatory' means anger or fear words made to push you. High emotional tone often goes with lower factual reliability, but the two are not the same.",
   },
   factual: {
     title: "Factual reliability",
-    body: "How well the article supports its claims: named sources, primary documents, quoted experts, links to studies. 'High' = well-sourced. 'Low' = bare assertions, anonymous sources only, or unfalsifiable claims. This rates *sourcing*, not whether you agree with the conclusions.",
+    body: "How well the article backs up its claims: named sources, original documents, quoted experts, and links to studies. 'High' means well-sourced. 'Low' means plain claims with no proof, only unnamed sources, or claims you cannot check. This score rates *sourcing*, not whether you agree with the article.",
   },
   fakeLikelihood: {
     title: "Fake-news likelihood",
-    body: "Estimated probability the article contains fabricated, misleading, or substantially distorted content. Heuristic, based on signals like missing sources, sensationalist framing, suspicious claims, and inconsistencies. NOT a definitive verdict; treat >50% as 'verify before sharing'.",
+    body: "A guess at the chance the article has made-up, misleading, or twisted content. It uses signals like missing sources, shocking framing, claims that look wrong, and parts that do not match. This is NOT a final answer. If the score is over 50%, check the article before you share it.",
   },
   sentiment: {
     title: "Sentiment",
-    body: "Overall positive/negative/neutral framing of the topic. Independent of bias: a center-right outlet and a center-left outlet can both have 'negative' sentiment about the same scandal.",
+    body: "How positive, negative, or neutral the article feels overall. This is separate from bias. A center-right site and a center-left site can both feel 'negative' about the same scandal.",
   },
 } as const;
 
 export const RED_FLAG_GLOSSARY: Record<string, string> = {
   "loaded language":
-    "Words chosen to evoke a strong emotional reaction (e.g., 'slammed', 'destroyed', 'thug') instead of neutral descriptors. A signal of persuasion over reporting.",
+    "Words picked to make you feel something strong (like 'slammed', 'destroyed', 'thug') instead of plain words. A sign the writer is trying to push you, not just report.",
   "missing sources":
-    "Claims aren't backed by named people, documents, or studies. Often appears as 'experts say' or 'sources confirm' without specifics.",
+    "Claims have no named people, documents, or studies behind them. Often shows up as 'experts say' or 'sources confirm' with no details.",
   "anonymous sources":
-    "Heavy reliance on unnamed sources. Sometimes legitimate (whistleblowers) but often used to launder unverifiable claims.",
+    "Heavy use of unnamed sources. Sometimes this is fair (like whistleblowers), but it is often used to share claims you cannot check.",
   "emotional appeals":
-    "Argument relies on triggering fear, anger, pride, or sympathy rather than evidence and reasoning.",
+    "The argument tries to make you feel fear, anger, pride, or pity, instead of giving evidence and reasons.",
   "ad hominem":
-    "Attacks a person's character instead of addressing their argument or actions.",
+    "Attacks a person's character instead of dealing with what they said or did.",
   "false dichotomy":
-    "Presents only two options when more exist (e.g., 'you're either with us or against us').",
+    "Shows only two choices when more exist (like 'you are either with us or against us').",
   "appeal to fear":
-    "Frames consequences as catastrophic to push the reader toward a conclusion.",
+    "Makes the results sound terrible to push you toward a certain answer.",
   "cherry-picking":
-    "Citing only data/quotes that support the conclusion while ignoring contradicting evidence.",
+    "Showing only the facts that fit one side. Hiding facts that point the other way.",
   "strawman":
-    "Misrepresents an opposing view in a weakened form, then attacks that fake version.",
+    "Twists the other side's view into a weaker version, then attacks that fake version.",
   sensationalism:
-    "Headline or framing exaggerated for shock/clicks beyond what the underlying facts support.",
+    "The headline or framing is blown up for shock or clicks, beyond what the facts actually say.",
   "unverified claims":
-    "Statements presented as fact without supporting evidence the reader can check.",
+    "Statements told as fact, with no evidence the reader can check.",
   "headline mismatch":
-    "Headline implies more (or different) than the body of the article actually says.",
+    "The headline suggests more, or something different, than what the article body actually says.",
   speculation:
-    "Presents guesses or 'what-if' framing as if they were established facts.",
+    "Guesses or 'what if' ideas shown as if they were known facts.",
   "lack of context":
-    "Omits surrounding facts that would change the reader's interpretation.",
+    "Leaves out other facts that would change how the reader sees the story.",
   "biased framing":
-    "Word choice or article structure presupposes a conclusion before evidence is presented.",
+    "Word choice or article order assumes the answer before showing the evidence.",
 };
 
 export function lookupRedFlag(flag: string): string | null {
@@ -64,4 +64,4 @@ export function lookupRedFlag(flag: string): string | null {
 }
 
 export const SCORE_SCALE_NOTE =
-  "Scores are AI estimates, not measurements. Treat them as a starting point for your own critical reading.";
+  "Scores are AI guesses, not exact numbers. Use them as a starting point for your own careful reading.";

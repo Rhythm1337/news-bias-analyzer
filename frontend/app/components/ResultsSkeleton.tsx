@@ -1,38 +1,80 @@
 export function ResultsSkeleton() {
+  const bar: React.CSSProperties = {
+    background: "var(--bg-3)",
+    borderRadius: 2,
+  };
   return (
-    <section className="rounded-2xl border border-zinc-200 dark:border-zinc-800 card-glass p-6 space-y-6 animate-pulse">
-      <div className="space-y-2 pb-4 border-b border-zinc-200 dark:border-zinc-800">
-        <div className="h-5 w-2/3 rounded bg-zinc-200 dark:bg-zinc-800" />
-        <div className="h-3 w-1/2 rounded bg-zinc-200 dark:bg-zinc-800" />
+    <section
+      className="card animate-pulse"
+      style={{
+        padding: 24,
+        display: "flex",
+        flexDirection: "column",
+        gap: 24,
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 8,
+          paddingBottom: 16,
+          borderBottom: "1px solid var(--rule)",
+        }}
+      >
+        <div style={{ ...bar, height: 20, width: "66%" }} />
+        <div style={{ ...bar, height: 12, width: "50%" }} />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))",
+          gap: 16,
+        }}
+      >
         {[0, 1, 2].map((i) => (
-          <div key={i} className="space-y-2">
-            <div className="h-3 w-24 rounded bg-zinc-200 dark:bg-zinc-800" />
-            <div className="h-5 w-20 rounded bg-zinc-200 dark:bg-zinc-800" />
-            <div className="h-2 w-full rounded-full bg-zinc-200 dark:bg-zinc-800" />
+          <div
+            key={i}
+            style={{ display: "flex", flexDirection: "column", gap: 8 }}
+          >
+            <div style={{ ...bar, height: 12, width: 96 }} />
+            <div style={{ ...bar, height: 20, width: 80 }} />
+            <div style={{ ...bar, height: 8, width: "100%", borderRadius: 999 }} />
           </div>
         ))}
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+          gap: 16,
+        }}
+      >
         {[0, 1].map((i) => (
           <div
             key={i}
-            className="rounded-xl border border-zinc-200 dark:border-zinc-800 p-3 space-y-2"
+            style={{
+              border: "1px solid var(--rule)",
+              borderRadius: "var(--radius)",
+              padding: 12,
+              display: "flex",
+              flexDirection: "column",
+              gap: 8,
+            }}
           >
-            <div className="h-3 w-32 rounded bg-zinc-200 dark:bg-zinc-800" />
-            <div className="h-7 w-20 rounded bg-zinc-200 dark:bg-zinc-800" />
+            <div style={{ ...bar, height: 12, width: 128 }} />
+            <div style={{ ...bar, height: 28, width: 80 }} />
           </div>
         ))}
       </div>
 
-      <div className="space-y-2">
-        <div className="h-3 w-20 rounded bg-zinc-200 dark:bg-zinc-800" />
-        <div className="h-3 w-full rounded bg-zinc-200 dark:bg-zinc-800" />
-        <div className="h-3 w-11/12 rounded bg-zinc-200 dark:bg-zinc-800" />
-        <div className="h-3 w-3/4 rounded bg-zinc-200 dark:bg-zinc-800" />
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        <div style={{ ...bar, height: 12, width: 80 }} />
+        <div style={{ ...bar, height: 12, width: "100%" }} />
+        <div style={{ ...bar, height: 12, width: "92%" }} />
+        <div style={{ ...bar, height: 12, width: "75%" }} />
       </div>
     </section>
   );
