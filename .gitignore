@@ -5,17 +5,29 @@ dist/
 build/
 
 .env
-.env.local
-.env*.local
+.env.*
+!.env.example
+!.env.*.example
 
 .venv/
 __pycache__/
 *.pyc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
 
 .DS_Store
 Thumbs.db
+~$*
 
 .idea/
 .vscode/
 .claude/
 *.log
+
+# Trained model weights (large binaries)
+backend/models/
+*.onnx
+*.zip

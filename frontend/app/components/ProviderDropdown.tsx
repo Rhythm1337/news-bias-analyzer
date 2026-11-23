@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Check, ChevronDown, Sparkles } from "lucide-react";
 
 type Provider = {
-  id: "gemini" | "openai" | "claude";
+  id: string;
   label: string;
   sub: string;
   available: boolean;
@@ -12,9 +12,9 @@ type Provider = {
 
 const PROVIDERS: Provider[] = [
   { id: "gemini", label: "Gemini 2.5 Flash", sub: "Google", available: true },
-  // Vendor-only labels for the disabled rows so we don't have to update
-  // them every time the upstream model name changes. The active row keeps
-  // the specific model so users can see exactly what is running.
+  { id: "hybrid", label: "Hybrid NLP + Gemini", sub: "Local NLP + Google", available: true },
+  { id: "onnx", label: "Local ONNX models", sub: "Local inference", available: true },
+  { id: "openshift", label: "OpenShift AI", sub: "OpenShift", available: true },
   { id: "openai", label: "OpenAI", sub: "OpenAI", available: false },
   { id: "claude", label: "Claude / Anthropic", sub: "Anthropic", available: false },
 ];
@@ -24,7 +24,7 @@ const PROVIDERS: Provider[] = [
  * future options gated as "Coming soon". Read-only for now: the backend
  * is single-provider and the click handlers on disabled rows do nothing.
  */
-export function ProviderDropdown() {
+export function ProviderDropdown({ provider }: { provider: string }) {
   const [open, setOpen] = useState(false);
   const wrapRef = useRef<HTMLSpanElement | null>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
@@ -68,7 +68,9 @@ export function ProviderDropdown() {
     };
   }, [open]);
 
-  const active = PROVIDERS.find((p) => p.available) ?? PROVIDERS[0];
+  const active =
+    PROVIDERS.find((p) => p.id === provider) ??
+    { id: provider, label: provider, sub: "Configured backend", available: true };
 
   return (
     <span
@@ -141,7 +143,7 @@ export function ProviderDropdown() {
           }}
         >
           {PROVIDERS.map((p) => {
-            const isActive = p.available;
+            const isActive = p.id === active.id;
             return (
               <div
                 key={p.id}
