@@ -26,8 +26,3 @@ Thumbs.db
 .vscode/
 .claude/
 *.log
-
-# Trained model weights (large binaries)
-backend/models/
-*.onnx
-*.zip
