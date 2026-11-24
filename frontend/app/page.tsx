@@ -845,10 +845,10 @@ function Footer() {
           </Link>
           <span style={{ flex: 1 }} />
           <a
-            href="mailto:rhythm@stacksandwich.com"
+            href="mailto:rhythm@rhythmdev.me"
             style={{ color: "var(--ink-3)" }}
           >
-            rhythm@stacksandwich.com
+            rhythm@rhythmdev.me
           </a>
         </div>
       </div>
