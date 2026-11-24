@@ -8,7 +8,7 @@ Live: [news-bias-analyzer.vercel.app](https://news-bias-analyzer.vercel.app)
 
 - **Frontend** Next.js 16, TypeScript, Tailwind v4, Motion, lucide-react
 - **Backend** FastAPI on Python 3.12+, SQLAlchemy, slowapi, trafilatura, httpx
-- **AI** Gemini 2.5 Flash via `google-genai`, behind a pluggable `AIProvider` interface
+- **AI** Gemini 3.5 Flash-Lite via `google-genai`, behind a pluggable `AIProvider` interface
 - **DB** Postgres (cloud)
 
 ## Run locally

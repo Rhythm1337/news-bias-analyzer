@@ -628,7 +628,7 @@ function PrimerAccordions() {
         body={
           <>
             Your article is read, cleaned up, and sent in one structured
-            request to Gemini 2.5 Flash. To reduce prompt-injection risk,
+            request to Gemini 3.5 Flash-Lite. To reduce prompt-injection risk,
             we wrap the article in special markers that tell the model not
             to trust it, and we cap how long it can be. The model returns
             four scores, smaller sub-scores, a sentiment trail, named people

@@ -138,7 +138,7 @@ export function HowThisWorks() {
                           borderRadius: 2,
                         }}
                       >
-                        gemini-2.5-flash
+                        gemini-3.5-flash-lite
                       </code>{" "}
                       with a strict JSON format.
                     </li>

@@ -11,7 +11,7 @@ type Provider = {
 };
 
 const PROVIDERS: Provider[] = [
-  { id: "gemini", label: "Gemini 2.5 Flash", sub: "Google", available: true },
+  { id: "gemini", label: "Gemini 3.5 Flash-Lite", sub: "Google", available: true },
   // Vendor-only labels for the disabled rows so we don't have to update
   // them every time the upstream model name changes. The active row keeps
   // the specific model so users can see exactly what is running.
