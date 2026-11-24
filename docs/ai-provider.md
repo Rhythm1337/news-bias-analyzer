@@ -24,9 +24,11 @@ route /analyze
 AnalysisResult (always the same shape, regardless of which AI ran it)
 ```
 
-The provider is chosen at startup by reading the `AI_PROVIDER` env var. Today
-the only working provider is `gemini`. A stub for `openshift` is in the tree
-ready to fill in (see [openshift-integration.md](./openshift-integration.md)).
+The provider is chosen at startup by reading the `AI_PROVIDER` env var. Available options:
+- `gemini`: Google Gemini 3.5 Flash-Lite for end-to-end analysis.
+- `hybrid`: Combines local NLP (spaCy NER, sentiment and emotion tone, text heuristics) with Gemini reasoning for summaries, bias nuance, and highlights. Sentiment and tone use the fine-tuned `sentiment` / `emotion_tone` ONNX models when they are in `backend/models/`, otherwise HuggingFace RoBERTa.
+- `onnx` (or `local`): 100% offline local inference using fine-tuned DistilBERT ONNX models (quantized INT8) for political bias, LIAR factuality, emotion tone and sentiment, with zero external API calls.
+- `openshift`: A stub for self-hosted KServe / ModelMesh models (see [openshift-integration.md](./openshift-integration.md)).
 
 ## The interface
 

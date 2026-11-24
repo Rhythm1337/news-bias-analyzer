@@ -19,6 +19,16 @@ def get_provider() -> AIProvider:
         from app.ai.gemini import GeminiProvider
 
         return GeminiProvider()
+    if name == "hybrid":
+        if not settings.gemini_api_key:
+            raise ValueError("GEMINI_API_KEY is not set.")
+        from app.ai.hybrid import HybridProvider
+
+        return HybridProvider()
+    if name in ("onnx", "local"):
+        from app.ai.local_onnx import LocalONNXProvider
+
+        return LocalONNXProvider()
     if name == "openshift":
         if not settings.openshift_ai_inference_url:
             raise ValueError("OPENSHIFT_AI_INFERENCE_URL is not set.")

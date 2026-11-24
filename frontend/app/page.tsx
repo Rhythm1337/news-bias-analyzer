@@ -39,6 +39,9 @@ import { SCORE_SCALE_NOTE } from "@/app/lib/glossary";
 import type { AnalyzeResponse, SubMetric } from "@/app/lib/types";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+const LOCAL_BACKEND = /^https?:\/\/(?:localhost|127\.0\.0\.1)(?::\d+)?(?:\/|$)/i.test(
+  API_URL,
+);
 const FALLBACK_MIN_TEXT_CHARS = 200;
 const REQUEST_TIMEOUT_MS = 30_000;
 
@@ -85,6 +88,7 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [minTextChars, setMinTextChars] = useState(FALLBACK_MIN_TEXT_CHARS);
+  const [aiProvider, setAiProvider] = useState("gemini");
   const abortRef = useRef<AbortController | null>(null);
   // Distinguishes a user-initiated cancel (mode switch, new submit) from a
   // timeout-driven abort. The catch in submit() only surfaces the "timed out"
@@ -98,6 +102,9 @@ export default function Home() {
       .then((data) => {
         if (data && typeof data.min_text_chars === "number") {
           setMinTextChars(data.min_text_chars);
+        }
+        if (data && typeof data.ai_provider === "string") {
+          setAiProvider(data.ai_provider);
         }
       })
       .catch((e) => {
@@ -186,7 +193,7 @@ export default function Home() {
 
   return (
     <>
-      <WakingModal status={backendStatus} />
+      <WakingModal status={backendStatus} localBackend={LOCAL_BACKEND} />
       <BackendToast key={backendStatus} status={backendStatus} />
 
       <Topbar active={result ? "report" : "analyze"} hasResult={!!result} />
@@ -210,6 +217,7 @@ export default function Home() {
                 setTextValue={setTextValue}
                 trimmedTextLen={trimmedTextLen}
                 minTextChars={minTextChars}
+                aiProvider={aiProvider}
                 loading={loading}
                 error={error}
                 canSubmit={canSubmit}
@@ -354,6 +362,7 @@ function InputCard({
   setTextValue,
   trimmedTextLen,
   minTextChars,
+  aiProvider,
   loading,
   error,
   canSubmit,
@@ -370,6 +379,7 @@ function InputCard({
   setTextValue: (v: string) => void;
   trimmedTextLen: number;
   minTextChars: number;
+  aiProvider: string;
   loading: boolean;
   error: string | null;
   canSubmit: boolean;
@@ -582,7 +592,7 @@ function InputCard({
             flexWrap: "wrap",
           }}
         >
-          <ProviderDropdown />
+          <ProviderDropdown provider={aiProvider} />
           <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
             <span className="dot" style={{ background: "var(--c-tone)" }} />
             Takes 5 to 15 seconds
@@ -628,7 +638,7 @@ function PrimerAccordions() {
         body={
           <>
             Your article is read, cleaned up, and sent in one structured
-            request to Gemini 2.5 Flash. To reduce prompt-injection risk,
+            request to Gemini 3.5 Flash-Lite. To reduce prompt-injection risk,
             we wrap the article in special markers that tell the model not
             to trust it, and we cap how long it can be. The model returns
             four scores, smaller sub-scores, a sentiment trail, named people

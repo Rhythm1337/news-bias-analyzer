@@ -267,7 +267,7 @@ from a URL or was pasted, the next step is the same:
 `backend/app/ai/gemini.py:32`. We call `client.models.generate_content`
 with:
 
-- `model="gemini-2.5-flash"` (cheap and fast).
+- `model="gemini-3.5-flash-lite"` (cheap and fast).
 - `system_instruction` from `build_prompt`.
 - `response_mime_type="application/json"`.
 - `response_schema=AnalysisResult` (Pydantic model). This is Gemini's

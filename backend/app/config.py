@@ -1,4 +1,11 @@
+import os
+
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+# Providers that load local ML models (torch / ONNX / spaCy). Too heavy for
+# Render's free tier, so they are forced back to Gemini there.
+LOCAL_ONLY_PROVIDERS = {"hybrid", "onnx", "local"}
 
 
 class Settings(BaseSettings):
@@ -45,6 +52,14 @@ class Settings(BaseSettings):
     #       (e.g. Render behind Cloudflare).
     # Anything taken from further left can be spoofed by the client.
     trusted_proxy_hops: int = 1
+
+    @field_validator("ai_provider")
+    @classmethod
+    def _no_local_models_on_render(cls, v: str) -> str:
+        # Render sets RENDER=true on every service.
+        if os.environ.get("RENDER") and v.lower() in LOCAL_ONLY_PROVIDERS:
+            return "gemini"
+        return v
 
     @property
     def cors_origins(self) -> list[str]:

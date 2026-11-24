@@ -52,4 +52,5 @@ def app_config():
     """Public, non-sensitive configuration consumed by the frontend."""
     return {
         "min_text_chars": MIN_TEXT_CHARS,
+        "ai_provider": settings.ai_provider,
     }

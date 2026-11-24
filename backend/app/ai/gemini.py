@@ -11,7 +11,7 @@ from app.security.prompt_defense import build_prompt
 
 log = logging.getLogger(__name__)
 
-MODEL_NAME = "gemini-2.5-flash"
+MODEL_NAME = "gemini-3.5-flash-lite"
 GENERATION_TIMEOUT_SECONDS = 30.0
 
 
@@ -36,7 +36,6 @@ class GeminiProvider(AIProvider):
                     system_instruction=system_instruction,
                     response_mime_type="application/json",
                     response_schema=AnalysisResult,
-                    temperature=0.2,
                     # Deep mode worst case is around 11k output tokens. Leave
                     # headroom so the response does not get clipped.
                     max_output_tokens=12000,

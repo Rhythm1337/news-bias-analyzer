@@ -2,25 +2,36 @@
 
 Paste a URL or article text, get back a structured analysis: political bias, emotional tone, factual reliability, fake-news likelihood, sentiment, summary, and red flags. Built with a security angle (misinformation as social engineering).
 
-Live: [news-bias-analyzer.vercel.app](https://news-bias-analyzer.vercel.app)
+Hosted demo: [news-bias-analyzer.vercel.app](https://news-bias-analyzer.vercel.app) (may not include your current local changes)
 
 ## Stack
 
 - **Frontend** Next.js 16, TypeScript, Tailwind v4, Motion, lucide-react
 - **Backend** FastAPI on Python 3.12+, SQLAlchemy, slowapi, trafilatura, httpx
-- **AI** Gemini 2.5 Flash via `google-genai`, behind a pluggable `AIProvider` interface
+- **AI & NLP** Pluggable `AIProvider` supporting:
+  - **Gemini**: End-to-end Gemini 3.5 Flash-Lite via `google-genai`
+  - **Hybrid**: Local NLP pipeline (spaCy NER, sentiment and emotion tone from your fine-tuned ONNX models when installed, otherwise HuggingFace RoBERTa; citation density) paired with Gemini synthesis
+  - **ONNX (Local)**: 100% offline inference using four fine-tuned DistilBERT ONNX models (fake-news, political bias, emotion tone, sentiment; trained on Kaggle GPU, quantized to INT8) with zero external API calls
 - **DB** Postgres (cloud)
 
 ## Run locally
 
-```sh
+```powershell
 npm run setup
-cp backend/.env.example backend/.env       # then fill DATABASE_URL + GEMINI_API_KEY
-cp frontend/.env.local.example frontend/.env.local
+if (-not (Test-Path backend\.env)) { Copy-Item backend\.env.example backend\.env }
+# Edit backend\.env and choose AI_PROVIDER=onnx or AI_PROVIDER=gemini.
+# For Gemini, also set GEMINI_API_KEY; set DATABASE_URL to your Postgres connection.
 npm run dev
 ```
 
+You need Node.js and Python 3.12+. For `AI_PROVIDER=onnx`, put the exported model files and tokenizers in `backend/models/` before starting. The frontend defaults to the local backend at `http://localhost:8000`, so no frontend `.env.local` file is needed for local development. ONNX inference is local, but analyzing a URL still needs internet access to fetch the article; pasted text can be analyzed offline.
+
 `npm run dev` starts the FastAPI backend on `:8000` and Next on `:3000` via a small Node orchestrator (`scripts/dev.mjs`) that survives Windows console signal weirdness during uvicorn reloads.
+
+To switch AI providers, set `AI_PROVIDER` in `backend/.env`:
+- `AI_PROVIDER=gemini` (Cloud LLM)
+- `AI_PROVIDER=hybrid` (Local NLP + Gemini)
+- `AI_PROVIDER=onnx` (100% Offline Local ML Models)
 
 Other scripts: `npm run typecheck`, `npm run lint`, `npm run build`.
 
@@ -33,12 +44,32 @@ Other scripts: `npm run typecheck`, `npm run lint`, `npm run build`.
         │                                      ├─► trafilatura (URL extract)
         │                                      ├─► prompt-injection wrapping
         │                                      ├─► AIProvider.analyze()
-        │                                      └─► Gemini structured output
+        │                                      │     ├─► Gemini (pure LLM)
+        │                                      │     ├─► Hybrid (spaCy + HF + Gemini)
+        │                                      │     └─► ONNX (100% local fine-tuned models)
+        │                                      └─► AnalysisResult JSON
         │
         ◄──────── AnalysisResult JSON ─────────┘
 ```
 
-The `AIProvider` ABC ([`backend/app/ai/base.py`](backend/app/ai/base.py)) keeps the model swap surface tiny: drop in a new class, set `AI_PROVIDER` env var, done. Roadmap calls for a self-trained model later.
+The `AIProvider` ABC ([`backend/app/ai/base.py`](backend/app/ai/base.py)) keeps the model swap surface tiny: drop in a new class, set `AI_PROVIDER` env var (`gemini`, `hybrid`, `onnx`, `openshift`), done.
+
+## Fine-tuned models
+
+Four small DistilBERT classifiers are trained on Kaggle's free GPU and exported as INT8 ONNX (about 64 MB each) for CPU inference.
+
+| Model file | Dataset | Labels | Notebook |
+|---|---|---|---|
+| `fake_news` | LIAR | pants-fire ... true (6) | [`training/train_news_bias_models_fixed.ipynb`](training/train_news_bias_models_fixed.ipynb) |
+| `political_bias` | AllSides, else BABE | left ... right (5) or neutral / biased (2) | same notebook |
+| `emotion_tone` | GoEmotions (regrouped) | calm / neutral / charged / inflammatory | [`training/train_emotion_sentiment_models.ipynb`](training/train_emotion_sentiment_models.ipynb) |
+| `sentiment` | TweetEval | negative / neutral / positive | same notebook |
+
+Put the exported files (`<name>.onnx`, `<name>_labels.json`, `<name>_tokenizer/`) in `backend/models/`. `emotion_tone` and `sentiment` are loaded by [`backend/app/ai/local_classifiers.py`](backend/app/ai/local_classifiers.py); if they are missing, `nlp_pipeline.py` falls back to the pretrained HuggingFace models. See [`training/README.md`](training/README.md) for the full steps.
+
+Limits: these are small, text-only models. LIAR accuracy is only about 25-30% on 6 classes, the tone label is derived from GoEmotions rather than hand-labelled, and the models were trained on short social-media text, so they are rougher on long news articles. The model files are committed in `backend/models/`. On Render (`RENDER` env set) the `hybrid` and `onnx` providers are disabled in [`backend/app/config.py`](backend/app/config.py) and fall back to Gemini, so the free instance never loads them.
+
+Dataset licenses: this is a non-commercial college project. AllSides and BABE data are released for non-commercial / research use, and LIAR, GoEmotions and TweetEval are research datasets; check each dataset's own license before any commercial use.
 
 ## Security
 
@@ -46,6 +77,8 @@ The `AIProvider` ABC ([`backend/app/ai/base.py`](backend/app/ai/base.py)) keeps 
 - **Prompt injection** Article wrapped in untrusted-data markers, delimiter tokens stripped, length capped, system prompt frames everything inside as data. Output validated against a Pydantic schema enforced via Gemini's `response_schema`. ([`backend/app/security/prompt_defense.py`](backend/app/security/prompt_defense.py))
 - **Rate limiting** 20/min/IP on `/analyze` via slowapi.
 - **Error hygiene** Internal exceptions logged server-side; clients get generic 502s.
+
+Article fetching: URLs are fetched one at a time, only when a user submits them, via trafilatura and `curl_cffi`, with an optional ScrapingBee fallback for sites that block direct requests. Some news sites' terms forbid automated access; pasting the article text avoids fetching entirely.
 
 ## Deploying
 
@@ -57,4 +90,4 @@ Config files: [`frontend/vercel.json`](frontend/vercel.json), [`backend/Procfile
 
 - Postgres-backed cache of analyses (cut Gemini cost on repeat URLs)
 - Topic search (Reddit + News API), multi-source comparison
-- Self-trained model as a second `AIProvider`
+- Multi-source side-by-side comparison view
