@@ -5,7 +5,7 @@ import { ExternalLink, Mail } from "lucide-react";
 
 import { Topbar } from "@/app/components/Topbar";
 
-const EMAIL = "rhythm@stacksandwich.com";
+const EMAIL = "rhythm@rhythmdev.me";
 const REPO_URL = "https://github.com/Rhythm1337/news-bias-analyzer";
 
 export default function ContactPage() {

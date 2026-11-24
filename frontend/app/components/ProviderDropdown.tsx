@@ -8,15 +8,14 @@ type Provider = {
   label: string;
   sub: string;
   available: boolean;
+  note?: string;
 };
 
 const PROVIDERS: Provider[] = [
   { id: "gemini", label: "Gemini 3.5 Flash-Lite", sub: "Google", available: true },
-  { id: "hybrid", label: "Hybrid NLP + Gemini", sub: "Local NLP + Google", available: true },
-  { id: "onnx", label: "Local ONNX models", sub: "Local inference", available: true },
-  { id: "openshift", label: "OpenShift AI", sub: "OpenShift", available: true },
-  { id: "openai", label: "OpenAI", sub: "OpenAI", available: false },
-  { id: "claude", label: "Claude / Anthropic", sub: "Anthropic", available: false },
+  { id: "hybrid", label: "Hybrid NLP + Gemini", sub: "Local NLP + Google", available: true, note: "Local only" },
+  { id: "onnx", label: "Local ONNX models", sub: "Local inference", available: true, note: "Local only" },
+  { id: "openshift", label: "OpenShift AI", sub: "OpenShift", available: false },
 ];
 
 /**
@@ -144,11 +143,13 @@ export function ProviderDropdown({ provider }: { provider: string }) {
         >
           {PROVIDERS.map((p) => {
             const isActive = p.id === active.id;
+            // Only the backend's configured provider is usable; the rest are display-only.
+            const badge = isActive ? null : (p.note ?? (p.available ? null : "Soon"));
             return (
               <div
                 key={p.id}
                 role="menuitem"
-                aria-disabled={!p.available}
+                aria-disabled={!isActive}
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -156,11 +157,11 @@ export function ProviderDropdown({ provider }: { provider: string }) {
                   padding: "8px 10px",
                   borderRadius: "var(--radius)",
                   fontSize: 12.5,
-                  color: p.available ? "var(--ink)" : "var(--ink-4)",
-                  cursor: p.available ? "default" : "not-allowed",
+                  color: isActive ? "var(--ink)" : "var(--ink-4)",
+                  cursor: isActive ? "default" : "not-allowed",
                   background: isActive ? "var(--bg-2)" : "transparent",
                 }}
-                title={p.available ? undefined : "Coming soon"}
+                title={isActive ? undefined : p.note ? "Only when running the backend locally" : p.available ? "Not active on this server" : "Coming soon"}
               >
                 <span
                   style={{
@@ -202,7 +203,7 @@ export function ProviderDropdown({ provider }: { provider: string }) {
                     {p.sub}
                   </span>
                 </span>
-                {!p.available && (
+                {badge && (
                   <span
                     className="mono"
                     style={{
@@ -215,7 +216,7 @@ export function ProviderDropdown({ provider }: { provider: string }) {
                       color: "var(--ink-4)",
                     }}
                   >
-                    Soon
+                    {badge}
                   </span>
                 )}
               </div>
