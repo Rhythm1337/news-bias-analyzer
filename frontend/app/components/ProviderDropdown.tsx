@@ -16,8 +16,6 @@ const PROVIDERS: Provider[] = [
   { id: "hybrid", label: "Hybrid NLP + Gemini", sub: "Local NLP + Google", available: true, note: "Local only" },
   { id: "onnx", label: "Local ONNX models", sub: "Local inference", available: true, note: "Local only" },
   { id: "openshift", label: "OpenShift AI", sub: "OpenShift", available: false },
-  { id: "openai", label: "OpenAI", sub: "OpenAI", available: false },
-  { id: "claude", label: "Claude / Anthropic", sub: "Anthropic", available: false },
 ];
 
 /**
