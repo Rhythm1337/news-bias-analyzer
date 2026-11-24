@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 
 const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://news-bias-analyzer.vercel.app";
+  process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
 // Pinned to a fixed date so crawlers don't see "updated today" on every fetch.
 // Bump this when you make a meaningful content change (new page, big copy

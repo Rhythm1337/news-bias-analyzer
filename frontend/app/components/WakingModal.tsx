@@ -24,7 +24,13 @@ function getFocusable(root: HTMLElement): HTMLElement[] {
   );
 }
 
-export function WakingModal({ status }: { status: BackendStatusState }) {
+export function WakingModal({
+  status,
+  localBackend,
+}: {
+  status: BackendStatusState;
+  localBackend: boolean;
+}) {
   const [dismissed, setDismissed] = useState(false);
   const [elapsed, setElapsed] = useState(0);
   const dialogRef = useRef<HTMLDivElement | null>(null);
@@ -53,7 +59,8 @@ export function WakingModal({ status }: { status: BackendStatusState }) {
   }, [status]);
 
   const open = status === "waking" && !dismissed;
-  const progress = Math.min(99, Math.round((elapsed / ESTIMATED_COLD_START_S) * 100));
+  const estimatedColdStart = localBackend ? 10 : ESTIMATED_COLD_START_S;
+  const progress = Math.min(99, Math.round((elapsed / estimatedColdStart) * 100));
 
   // Focus management plus Escape and Tab trap while the dialog is open.
   useEffect(() => {
@@ -221,9 +228,9 @@ export function WakingModal({ status }: { status: BackendStatusState }) {
                     color: "var(--ink-2)",
                   }}
                 >
-                  This site uses Render&rsquo;s free tier, which sleeps after
-                  15 minutes of no traffic. The first request after a sleep
-                  takes up to a minute to wake up.
+                  {localBackend
+                    ? "The local backend is taking longer than usual to respond. It should be ready shortly."
+                      : "This site uses Render's free tier, which sleeps after 15 minutes of no traffic. The first request after a sleep takes up to a minute to wake up."}
                 </p>
                 <p
                   style={{
@@ -254,7 +261,7 @@ export function WakingModal({ status }: { status: BackendStatusState }) {
                 }}
               >
                 <span>{elapsed}s elapsed</span>
-                <span>~{ESTIMATED_COLD_START_S}s typical</span>
+                <span>~{estimatedColdStart}s typical</span>
               </div>
               <div
                 role="progressbar"

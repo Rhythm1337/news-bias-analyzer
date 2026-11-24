@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 export type BackendStatusState = "checking" | "ready" | "waking" | "down";
 
 const PING_TIMEOUT_FAST_MS = 3_000;
+const PING_TIMEOUT_LOCAL_MS = 8_000;
 const WAKE_TIMEOUT_MS = 75_000;
 
 async function pingOnce(
@@ -40,9 +41,12 @@ export function useBackendStatus(apiUrl: string) {
 
     (async () => {
       setStatus("checking");
+      const localApi = /^https?:\/\/(?:localhost|127\.0\.0\.1)(?::\d+)?(?:\/|$)/i.test(
+        apiUrl,
+      );
       const fast = await pingOnce(
         apiUrl,
-        PING_TIMEOUT_FAST_MS,
+        localApi ? PING_TIMEOUT_LOCAL_MS : PING_TIMEOUT_FAST_MS,
         controller.signal,
       );
       if (!active) return;
