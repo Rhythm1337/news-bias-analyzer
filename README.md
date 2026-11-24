@@ -67,7 +67,9 @@ Four small DistilBERT classifiers are trained on Kaggle's free GPU and exported 
 
 Put the exported files (`<name>.onnx`, `<name>_labels.json`, `<name>_tokenizer/`) in `backend/models/`. `emotion_tone` and `sentiment` are loaded by [`backend/app/ai/local_classifiers.py`](backend/app/ai/local_classifiers.py); if they are missing, `nlp_pipeline.py` falls back to the pretrained HuggingFace models. See [`training/README.md`](training/README.md) for the full steps.
 
-Limits: these are small, text-only models. LIAR accuracy is only about 25-30% on 6 classes, the tone label is derived from GoEmotions rather than hand-labelled, and the models were trained on short social-media text, so they are rougher on long news articles. `backend/models/` is git-ignored, so deployed servers need the files provided separately.
+Limits: these are small, text-only models. LIAR accuracy is only about 25-30% on 6 classes, the tone label is derived from GoEmotions rather than hand-labelled, and the models were trained on short social-media text, so they are rougher on long news articles. The model files are committed in `backend/models/`. On Render (`RENDER` env set) the `hybrid` and `onnx` providers are disabled in [`backend/app/config.py`](backend/app/config.py) and fall back to Gemini, so the free instance never loads them.
+
+Dataset licenses: this is a non-commercial college project. AllSides and BABE data are released for non-commercial / research use, and LIAR, GoEmotions and TweetEval are research datasets; check each dataset's own license before any commercial use.
 
 ## Security
 
@@ -75,6 +77,8 @@ Limits: these are small, text-only models. LIAR accuracy is only about 25-30% on
 - **Prompt injection** Article wrapped in untrusted-data markers, delimiter tokens stripped, length capped, system prompt frames everything inside as data. Output validated against a Pydantic schema enforced via Gemini's `response_schema`. ([`backend/app/security/prompt_defense.py`](backend/app/security/prompt_defense.py))
 - **Rate limiting** 20/min/IP on `/analyze` via slowapi.
 - **Error hygiene** Internal exceptions logged server-side; clients get generic 502s.
+
+Article fetching: URLs are fetched one at a time, only when a user submits them, via trafilatura and `curl_cffi`, with an optional ScrapingBee fallback for sites that block direct requests. Some news sites' terms forbid automated access; pasting the article text avoids fetching entirely.
 
 ## Deploying
 
