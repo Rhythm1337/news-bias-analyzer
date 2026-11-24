@@ -2,7 +2,7 @@
 
 Paste a URL or article text, get back a structured analysis: political bias, emotional tone, factual reliability, fake-news likelihood, sentiment, summary, and red flags. Built with a security angle (misinformation as social engineering).
 
-Hosted demo: [news-bias-analyzer.vercel.app](https://news-bias-analyzer.vercel.app) (may not include your current local changes)
+Hosted demo: [news-bias-analyzer.vercel.app](https://news-bias-analyzer.vercel.app) 
 
 ## Stack
 
